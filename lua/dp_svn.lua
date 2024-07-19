@@ -14,6 +14,10 @@ end
 -- 帮助
 -- {https://blog.csdn.net/kenkao/article/details/103384392}
 
+function M.gitkeep()
+  require 'dp_git.push'.gitkeep()
+end
+
 function M.tortoisesvn(cmd, cur, prompt)
   if not cmd then
     return
@@ -68,6 +72,10 @@ require 'which-key'.register {
 require 'which-key'.register {
   ['<leader>va'] = { function() M.tortoisesvn 'add' end, 'svn: add', mode = { 'n', 'v', }, silent = true, },
   ['<leader>vc'] = { function() M.tortoisesvn 'commit' end, 'svn: commit', mode = { 'n', 'v', }, silent = true, },
+}
+
+require 'which-key'.register {
+  ['<leader>vg'] = { function() M.gitkeep() end, 'svn: gitkeep', mode = { 'n', 'v', }, },
 }
 
 require 'which-key'.register {
