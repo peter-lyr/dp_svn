@@ -45,4 +45,5 @@ require 'which-key'.register {
   ['<leader>vc'] = { '<cmd>TortoiseSVN commit root yes<cr>', 'svn commit root yes<cr>', mode = { 'n', 'v', }, silent = true, },
   ['<leader>vl'] = { '<cmd>TortoiseSVN log cur yes<cr>', 'svn log cur yes<cr>', mode = { 'n', 'v', }, silent = true, },
   ['<leader>vk'] = { '<cmd>TortoiseSVN checkout root yes<cr>', 'svn checkout root yes<cr>', mode = { 'n', 'v', }, silent = true, },
+  ['<leader>v<a-c>'] = { '<cmd>TortoiseSVN cleanup root yes<cr>', 'svn checkout root yes<cr>', mode = { 'n', 'v', }, silent = true, },
 }
