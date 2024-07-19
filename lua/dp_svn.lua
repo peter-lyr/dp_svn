@@ -27,7 +27,9 @@ function M.tortoisesvn(cmd, cur, prompt)
     path = B.buf_get_name()
   end
   if not prompt or B.is_sure('Sure to %s in %s', cmd, path) then
-    vim.fn.execute(string.format('silent !%s && start tortoiseproc.exe /command:%s /path:\"%s\"', B.system_cd(path), cmd, path))
+    cmd = string.format('silent !%s && start tortoiseproc.exe /command:%s /path:\"%s\"', B.system_cd(path), cmd, path)
+    B.echo(cmd)
+    vim.fn.execute(cmd)
   end
 end
 
