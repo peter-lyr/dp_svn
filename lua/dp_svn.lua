@@ -15,9 +15,9 @@ end
 -- {https://blog.csdn.net/kenkao/article/details/103384392}
 
 M.commands = {
-  "clean",
+  -- "clean",
   "update",
-  "clean_update",
+  -- "clean_update",
   "show",
   "show-gui",
   "kill-TortoiseProc.exe",
