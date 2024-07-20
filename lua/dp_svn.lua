@@ -28,7 +28,9 @@ function M.svn_multi_root(cwd)
     if cmd then
       if B.is_in_tbl(cmd, {'update', 'clean_update'}) then
         local revision = vim.fn.input(string.format('%s to which revision?: ', cmd))
-        require 'dp_git.push'.svn_multi_root(cwd, cmd, revision)
+        if B.is(revision) then
+          require 'dp_git.push'.svn_multi_root(cwd, cmd, revision)
+        end
       else
         require 'dp_git.push'.svn_multi_root(cwd, cmd)
       end
