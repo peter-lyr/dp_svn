@@ -14,8 +14,26 @@ end
 -- 帮助
 -- {https://blog.csdn.net/kenkao/article/details/103384392}
 
-function M.gitkeep()
-  require 'dp_git.push'.gitkeep()
+M.commands = {
+  "clean",
+  "update",
+  "clean_update",
+  "show",
+  "show-gui",
+  "kill-TortoiseProc.exe",
+}
+
+function M.svn_multi_root(cwd)
+  B.ui_sel(M.commands, 'svn do what', function(cmd)
+    if cmd then
+      if B.is_in_tbl(cmd, {'update', 'clean_update'}) then
+        local revision = vim.fn.input(string.format('%s to which revision?: ', cmd))
+        require 'dp_git.push'.svn_multi_root(cwd, cmd, revision)
+      else
+        require 'dp_git.push'.svn_multi_root(cwd, cmd)
+      end
+    end
+  end)
 end
 
 function M.tortoisesvn(cmd, cur, prompt)
@@ -77,7 +95,8 @@ require 'which-key'.register {
 }
 
 require 'which-key'.register {
-  ['<leader>vg'] = { function() M.gitkeep() end, 'svn: gitkeep', mode = { 'n', 'v', }, },
+  ['<leader>vg'] = { function() M.svn_multi_root 'git' end, 'svn: svn_multi_root git', mode = { 'n', 'v', }, },
+  ['<leader>vh'] = { function() M.svn_multi_root 'proj' end, 'svn: svn_multi_root proj', mode = { 'n', 'v', }, },
 }
 
 require 'which-key'.register {
