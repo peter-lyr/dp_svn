@@ -18,9 +18,9 @@ M.commands = {
   -- "clean",
   "update",
   -- "clean_update",
-  "show",
+  -- "show",
   "show-gui",
-  "kill-TortoiseProc.exe",
+  -- "kill-TortoiseProc.exe",
 }
 
 function M.svn_multi_root(cwd)
