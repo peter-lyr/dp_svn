@@ -82,25 +82,29 @@ end, { nargs = '*', })
 
 require 'which-key'.register {
   ['<leader>v'] = { name = 'dp_svn', },
-  ['<leader>vo'] = { function() M.tortoisesvn('settings', 'cur') end, 'svn: settings cur', mode = { 'n', 'v', }, silent = true, },
+  ['<leader>vo'] = { function() M.tortoisesvn 'settings' end, 'svn: settings', mode = { 'n', 'v', }, silent = true, },
 }
 
 require 'which-key'.register {
-  ['<leader>vf'] = { function() M.tortoisesvn 'diff' end, 'svn: diff', mode = { 'n', 'v', }, silent = true, },
   ['<leader>vd'] = { function() M.tortoisesvn('diff', 'cur') end, 'svn: diff cur', mode = { 'n', 'v', }, silent = true, },
+  ['<leader>vf'] = { function() M.tortoisesvn('diff', 'proj') end, 'svn: diff proj', mode = { 'n', 'v', }, silent = true, },
+  ['<leader>vg'] = { function() M.tortoisesvn('diff', 'git') end, 'svn: diff git', mode = { 'n', 'v', }, silent = true, },
 }
 
 require 'which-key'.register {
-  ['<leader>v;'] = { function() M.tortoisesvn 'log' end, 'svn: log', mode = { 'n', 'v', }, silent = true, },
   ['<leader>vl'] = { function() M.tortoisesvn('log', 'cur') end, 'svn: log cur', mode = { 'n', 'v', }, silent = true, },
+  ['<leader>v;'] = { function() M.tortoisesvn('log', 'proj') end, 'svn: log proj', mode = { 'n', 'v', }, silent = true, },
   ["<leader>v'"] = { function() M.tortoisesvn('log', 'git') end, 'svn: log git', mode = { 'n', 'v', }, silent = true, },
+}
+
+require 'which-key'.register {
+  ['<leader>vu'] = { function() M.tortoisesvn 'update /rev' end, 'svn: update /rev', mode = { 'n', 'v', }, silent = true, },
+  ['<leader>vi'] = { function() M.tortoisesvn('update-cmdline', 'git') end, 'svn: update-cmdline', mode = { 'n', 'v', }, silent = true, },
 }
 
 require 'which-key'.register {
   ['<leader>vw'] = { function() M.tortoisesvn('repobrowser', 'cur') end, 'svn: repobrowser cur', mode = { 'n', 'v', }, silent = true, },
   ['<leader>ve'] = { function() M.tortoisesvn 'repobrowser' end, 'svn: repobrowser', mode = { 'n', 'v', }, silent = true, },
-  ['<leader>vu'] = { function() M.tortoisesvn 'update /rev' end, 'svn: update /rev', mode = { 'n', 'v', }, silent = true, },
-  ['<leader>vi'] = { function() M.tortoisesvn('update-cmdline', 'git') end, 'svn: update-cmdline', mode = { 'n', 'v', }, silent = true, },
 }
 
 require 'which-key'.register {
