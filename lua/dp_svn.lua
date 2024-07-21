@@ -25,8 +25,9 @@ function M.tortoisesvn_do(cmd, path, revision)
     end
   else
     cmd = string.format('silent !%s && start tortoiseproc.exe /command:%s /path:\"%s\"', B.system_cd(path), cmd, path)
+    print(cmd)
     vim.fn.execute(cmd)
-    vim.cmd('silent !winwaitactive.exe tortoiseproc.exe')
+    vim.cmd 'silent !winwaitactive.exe tortoiseproc.exe'
   end
 end
 
@@ -120,7 +121,8 @@ require 'which-key'.register {
 
 require 'which-key'.register {
   ['<leader>va'] = { function() M.tortoisesvn 'add' end, 'svn: add', mode = { 'n', 'v', }, silent = true, },
-  ['<leader>vc'] = { function() M.tortoisesvn 'commit' end, 'svn: commit', mode = { 'n', 'v', }, silent = true, },
+  ['<leader>vc'] = { function() M.tortoisesvn('commit', 'proj') end, 'svn: commit proj', mode = { 'n', 'v', }, silent = true, },
+  ['<leader>vt'] = { function() M.tortoisesvn('commit', 'git') end, 'svn: commit git', mode = { 'n', 'v', }, silent = true, },
 }
 
 require 'which-key'.register {
