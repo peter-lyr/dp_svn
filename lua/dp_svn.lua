@@ -19,19 +19,12 @@ end
 -- 帮助
 -- {https://blog.csdn.net/kenkao/article/details/103384392}
 
-M.commands = {
-  -- 'clean',
-  'update',
-  -- 'clean_update',
-  -- 'show',
-  'show-gui',
-  -- 'kill-TortoiseProc.exe',
-}
-
 function M.tortoisesvn_do(cmd, path, revision)
-  if cmd == 'update' then
-    cmd = string.format('silent !start cmd /c "%s && echo %s && svn update --set-depth infinity --accept mine-full %s & pause"', B.system_cd(path), path, revision)
-    vim.cmd(cmd)
+  if B.is_in_str('-cmdline', cmd) then
+    if B.is_in_str('update', cmd) then
+      cmd = string.format('silent !start cmd /c "%s && echo %s && svn update --set-depth infinity --accept mine-full %s & pause"', B.system_cd(path), path, revision)
+      vim.cmd(cmd)
+    end
   else
     cmd = string.format('silent !%s && start tortoiseproc.exe /command:%s /path:\"%s\"', B.system_cd(path), cmd, path)
     vim.fn.execute(cmd)
@@ -43,7 +36,7 @@ function M.get_revision(revision)
   if not revision then
     revision = vim.fn.input(string.format('%s revision: ', cmd), '1000000')
     if not B.is(revision) then
-      return
+      return nil
     end
     revision = tonumber(revision)
     if not revision then
@@ -55,14 +48,18 @@ function M.get_revision(revision)
       revision = string.format('-r %d', revision)
     end
   end
+  return revision
 end
 
 function M.tortoisesvn(cmd, cwd, revision)
   if not cmd then
     return
   end
-  if cmd == 'update' then
+  if B.is_in_str('-cmdline', cmd) then
     revision = M.get_revision(revision)
+    if revision == nil then
+      return
+    end
   end
   local path = B.get_proj_root()
   if cwd == 'cur' then
@@ -102,6 +99,7 @@ require 'which-key'.register {
   ['<leader>vw'] = { function() M.tortoisesvn('repobrowser', 'cur') end, 'svn: repobrowser cur', mode = { 'n', 'v', }, silent = true, },
   ['<leader>ve'] = { function() M.tortoisesvn 'repobrowser' end, 'svn: repobrowser', mode = { 'n', 'v', }, silent = true, },
   ['<leader>vu'] = { function() M.tortoisesvn 'update /rev' end, 'svn: update /rev', mode = { 'n', 'v', }, silent = true, },
+  ['<leader>vi'] = { function() M.tortoisesvn('update-cmdline', 'git') end, 'svn: update-cmdline', mode = { 'n', 'v', }, silent = true, },
 }
 
 require 'which-key'.register {
