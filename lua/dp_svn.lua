@@ -28,39 +28,59 @@ M.commands = {
   -- 'kill-TortoiseProc.exe',
 }
 
-function M.svn_multi_root(cwd)
-  B.ui_sel(M.commands, 'svn do what', function(cmd)
-    if cmd then
-      if B.is_in_tbl(cmd, { 'update', 'clean_update', }) then
-        local revision = vim.fn.input(string.format('%s to which revision?: ', cmd))
-        if B.is(revision) then
-          B.cmd_histadd([[lua require 'dp_git.push'.svn_multi_root("%s", "%s", "%s")]], cwd, cmd, revision)
-        end
-      else
-        B.cmd_histadd([[lua require 'dp_git.push'.svn_multi_root("%s", "%s")]], cwd, cmd)
-      end
-    end
-  end)
-end
-
-function M.tortoisesvn(cmd, cur, prompt)
-  if not cmd then
-    return
-  end
-  local path = B.get_proj_root()
-  if cur == 'cur' then
-    path = B.buf_get_name()
-  end
-  if not prompt or B.is_sure('Sure to %s in %s', cmd, path) then
+function M.tortoisesvn_do(cmd, path, revision)
+  if cmd == 'update' then
+    cmd = string.format('silent !start cmd /c "%s && echo %s && svn update --set-depth infinity --accept mine-full %s & pause"', B.system_cd(path), path, revision)
+    vim.cmd(cmd)
+  else
     cmd = string.format('silent !%s && start tortoiseproc.exe /command:%s /path:\"%s\"', B.system_cd(path), cmd, path)
-    B.echo(cmd)
     vim.fn.execute(cmd)
     B.cmd([[%s tortoiseproc.exe]], M.winwaitactive_exe)
   end
 end
 
+function M.get_revision(revision)
+  if not revision then
+    revision = vim.fn.input(string.format('%s revision: ', cmd), '1000000')
+    if not B.is(revision) then
+      return
+    end
+    revision = tonumber(revision)
+    if not revision then
+      revision = 1000000
+    end
+    if revision >= 1000000 then
+      revision = ''
+    else
+      revision = string.format('-r %d', revision)
+    end
+  end
+end
+
+function M.tortoisesvn(cmd, cwd, revision)
+  if not cmd then
+    return
+  end
+  if cmd == 'update' then
+    revision = M.get_revision(revision)
+  end
+  local path = B.get_proj_root()
+  if cwd == 'cur' then
+    path = B.buf_get_name()
+  elseif cwd == 'git' then
+    local paths = B.get_dirs_named_with_till_git '.svn'
+    for _, _path in ipairs(paths) do
+      M.tortoisesvn_do(cmd, _path, revision)
+    end
+    require 'dp_git.push'.git_keep()
+    return
+  end
+  M.tortoisesvn_do(cmd, path, revision)
+  require 'dp_git.push'.git_keep()
+end
+
 vim.api.nvim_create_user_command('TortoiseSvn', function(params)
-  M.tortoisesvn(params['fargs'])
+  M.tortoisesvn(unpack(params['fargs']))
 end, { nargs = '*', })
 
 require 'which-key'.register {
@@ -100,11 +120,6 @@ require 'which-key'.register {
 require 'which-key'.register {
   ['<leader>va'] = { function() M.tortoisesvn 'add' end, 'svn: add', mode = { 'n', 'v', }, silent = true, },
   ['<leader>vc'] = { function() M.tortoisesvn 'commit' end, 'svn: commit', mode = { 'n', 'v', }, silent = true, },
-}
-
-require 'which-key'.register {
-  ['<leader>vg'] = { function() M.svn_multi_root 'git' end, 'svn: svn_multi_root git', mode = { 'n', 'v', }, },
-  ['<leader>vh'] = { function() M.svn_multi_root 'proj' end, 'svn: svn_multi_root proj', mode = { 'n', 'v', }, },
 }
 
 require 'which-key'.register {
