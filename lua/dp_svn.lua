@@ -7,8 +7,6 @@ if not sta then return print('Dp_base is required!', debug.getinfo(1)['source'])
 M.source = B.getsource(debug.getinfo(1)['source'])
 M.lua = B.getlua(M.source)
 
-M.winwaitactive_exe = B.getcreate_file(B.file_parent(M.source), 'winwaitactive.exe')
-
 if B.check_plugins {
       'folke/which-key.nvim',
       'git@github.com:peter-lyr/dp_git',
@@ -28,7 +26,7 @@ function M.tortoisesvn_do(cmd, path, revision)
   else
     cmd = string.format('silent !%s && start tortoiseproc.exe /command:%s /path:\"%s\"', B.system_cd(path), cmd, path)
     vim.fn.execute(cmd)
-    B.cmd([[%s tortoiseproc.exe]], M.winwaitactive_exe)
+    vim.cmd('winwaitactive.exe tortoiseproc.exe')
   end
 end
 
