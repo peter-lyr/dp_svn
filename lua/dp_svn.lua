@@ -15,24 +15,24 @@ end
 -- {https://blog.csdn.net/kenkao/article/details/103384392}
 
 M.commands = {
-  -- "clean",
-  "update",
-  -- "clean_update",
-  -- "show",
-  "show-gui",
-  -- "kill-TortoiseProc.exe",
+  -- 'clean',
+  'update',
+  -- 'clean_update',
+  -- 'show',
+  'show-gui',
+  -- 'kill-TortoiseProc.exe',
 }
 
 function M.svn_multi_root(cwd)
   B.ui_sel(M.commands, 'svn do what', function(cmd)
     if cmd then
-      if B.is_in_tbl(cmd, {'update', 'clean_update'}) then
+      if B.is_in_tbl(cmd, { 'update', 'clean_update', }) then
         local revision = vim.fn.input(string.format('%s to which revision?: ', cmd))
         if B.is(revision) then
-          require 'dp_git.push'.svn_multi_root(cwd, cmd, revision)
+          B.cmd_histadd([[lua require 'dp_git.push'.svn_multi_root("%s", "%s", "%s")]], cwd, cmd, revision)
         end
       else
-        require 'dp_git.push'.svn_multi_root(cwd, cmd)
+        B.cmd_histadd([[lua require 'dp_git.push'.svn_multi_root("%s", "%s")]], cwd, cmd)
       end
     end
   end)
