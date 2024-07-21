@@ -93,6 +93,7 @@ require 'which-key'.register {
 require 'which-key'.register {
   ['<leader>v;'] = { function() M.tortoisesvn 'log' end, 'svn: log', mode = { 'n', 'v', }, silent = true, },
   ['<leader>vl'] = { function() M.tortoisesvn('log', 'cur') end, 'svn: log cur', mode = { 'n', 'v', }, silent = true, },
+  ["<leader>v'"] = { function() M.tortoisesvn('log', 'git') end, 'svn: log git', mode = { 'n', 'v', }, silent = true, },
 }
 
 require 'which-key'.register {
