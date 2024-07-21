@@ -26,7 +26,7 @@ function M.tortoisesvn_do(cmd, path, revision)
   else
     cmd = string.format('silent !%s && start tortoiseproc.exe /command:%s /path:\"%s\"', B.system_cd(path), cmd, path)
     vim.fn.execute(cmd)
-    vim.cmd('winwaitactive.exe tortoiseproc.exe')
+    vim.cmd('silent !winwaitactive.exe tortoiseproc.exe')
   end
 end
 
