@@ -14,6 +14,13 @@ if B.check_plugins {
   return
 end
 
+M.has_tortoise_svn = 1
+
+local result = vim.fn.systemlist { 'which', 'tortoiseproc.exe', }
+if B.is_in_str('no tortoiseproc.exe in', table.concat(result, '\n')) then
+  M.has_tortoise_svn = nil
+end
+
 -- 帮助
 -- {https://blog.csdn.net/kenkao/article/details/103384392}
 
@@ -51,6 +58,9 @@ function M.get_revision(revision)
 end
 
 function M.tortoisesvn(cmd, cwd, revision)
+  if not M.has_tortoise_svn then
+    return
+  end
   if not cmd then
     return
   end
