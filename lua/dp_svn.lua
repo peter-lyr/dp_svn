@@ -38,7 +38,7 @@ function M.tortoisesvn_do(cmd, path, revision)
   end
 end
 
-function M.get_revision(revision)
+function M.get_revision(cmd, revision)
   if not revision then
     revision = vim.fn.input(string.format('%s revision: ', cmd), '1000000')
     if not B.is(revision) then
@@ -65,7 +65,7 @@ function M.tortoisesvn(cmd, cwd, revision)
     return
   end
   if B.is_in_str('-cmdline', cmd) then
-    revision = M.get_revision(revision)
+    revision = M.get_revision(cmd, revision)
     if revision == nil then
       return
     end
