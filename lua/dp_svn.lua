@@ -27,8 +27,34 @@ end
 function M.tortoisesvn_do(cmd, path, revision)
   if B.is_in_str('-cmdline', cmd) then
     if B.is_in_str('update', cmd) then
-      cmd = string.format('silent !start cmd /c "%s && echo %s && svn update --set-depth infinity --accept mine-full %s & pause"', B.system_cd(path), path, revision)
-      vim.cmd(cmd)
+      B.system_run('start', {
+        B.system_cd(path),
+        'echo ' .. path,
+        'svn cleanup',
+        'svn revert -R .',
+        'svn update --set-depth infinity --accept mine-full ' .. revision,
+        'pause',
+      })
+    end
+  else
+    cmd = string.format('silent !%s && start tortoiseproc.exe /command:%s /path:\"%s\"', B.system_cd(path), cmd, path)
+    print(cmd)
+    vim.fn.execute(cmd)
+    vim.cmd 'silent !winwaitactive.exe tortoiseproc.exe'
+  end
+end
+
+function M.tortoisesvn_do_one_by_one(cmd, path, revision)
+  if B.is_in_str('-cmdline', cmd) then
+    if B.is_in_str('update', cmd) then
+      vim.cmd('!' .. vim.fn.join({
+        B.system_cd(path),
+        'echo ' .. path,
+        'svn cleanup',
+        'svn revert -R .',
+        'svn update --set-depth infinity --accept mine-full ' .. revision,
+        'pause',
+      }, ' && '))
     end
   else
     cmd = string.format('silent !%s && start tortoiseproc.exe /command:%s /path:\"%s\"', B.system_cd(path), cmd, path)
@@ -75,8 +101,14 @@ function M.tortoisesvn(cmd, cwd, revision)
     path = B.buf_get_name()
   elseif cwd == 'git' then
     local paths = B.get_dirs_named_with_till_git '.svn'
-    for _, _path in ipairs(paths) do
-      M.tortoisesvn_do(cmd, _path, revision)
+    if B.is_in_str('-cmdline', cmd) then
+      for _, _path in ipairs(paths) do
+        M.tortoisesvn_do_one_by_one(cmd, _path, revision)
+      end
+    else
+      for _, _path in ipairs(paths) do
+        M.tortoisesvn_do(cmd, _path, revision)
+      end
     end
     require 'dp_git.push'.git_keep()
     return
