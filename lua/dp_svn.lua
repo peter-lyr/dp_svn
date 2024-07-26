@@ -33,7 +33,7 @@ function M.tortoisesvn_do(cmd, path, revision)
         'svn cleanup',
         'svn revert -R .',
         'svn update --set-depth infinity --accept mine-full ' .. revision,
-        'pause',
+        'timeout /t 30',
       })
     end
   else
@@ -53,7 +53,6 @@ function M.tortoisesvn_do_one_by_one(cmd, path, revision)
         'svn cleanup',
         'svn revert -R .',
         'svn update --set-depth infinity --accept mine-full ' .. revision,
-        'pause',
       }, ' && '))
     end
   else
@@ -102,8 +101,10 @@ function M.tortoisesvn(cmd, cwd, revision)
   elseif cwd == 'git' then
     local paths = B.get_dirs_named_with_till_git '.svn'
     if B.is_in_str('-cmdline', cmd) then
+      M.tortoisesvn_do_one_by_one(cmd, paths[1], revision)
+      table.remove(paths, 1)
       for _, _path in ipairs(paths) do
-        M.tortoisesvn_do_one_by_one(cmd, _path, revision)
+        M.tortoisesvn_do(cmd, _path, revision)
       end
     else
       for _, _path in ipairs(paths) do
